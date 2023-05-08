@@ -12,12 +12,27 @@ class Instabot:
         with open(config_path) as file:
             self.config = yaml.load(file, Loader=yaml.FullLoader)
         self.driver = webdriver.Chrome(service=Service(self.config['driver_path']))
+        PROXY = "IpOfTheProxy:PORT" 
+        chrome_options = webdriver.ChromeOptions() 
+        chrome_options.add_argument("--proxy-server=%s" % PROXY) 
+        chrome = webdriver.Chrome(options=chrome_options) 
         #print(self.config)
         self.login(username)
 
     def login(self, username):
+        options = webdriver.ChromeOptions() 
+        # Adding argument to disable the AutomationControlled flag 
+        options.add_argument("--disable-blink-features=AutomationControlled") 
+        # Exclude the collection of enable-automation switches 
+        options.add_experimental_option("excludeSwitches", ["enable-automation"]) 
+        # Turn-off userAutomationExtension 
+        options.add_experimental_option("useAutomationExtension", False) 
+        # Setting the driver path and requesting a page 
+        driver = webdriver.Chrome(options=options) 
+        # Changing the property of the navigator value for webdriver to undefined 
+        driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})") 
         self.driver.get('https://www.instagram.com/accounts/login/')
-        time.sleep(7)
+        time.sleep(2)
         self.driver.find_element(By.NAME, 'username').send_keys(self.config['login']['username'])
         self.driver.find_element(By.NAME, 'password').send_keys(self.config['login']['password'])
         self.driver.find_element(By.CSS_SELECTOR, 'button[type=submit]').click()
@@ -31,10 +46,13 @@ class Instabot:
         time.sleep(5)
         # wait for page to load
         # Get all the followers
-        self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/button").click()
+        #self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/button").click()
+        follower = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]")
+        removebutton0 = follower.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]/div/div/div/div[3]/div/div")
+        removebutton0.click()
         time.sleep(5)
-        #follower = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]")
-        #button = follower.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]/div/div/div/div[3]/div/div")
+        removebutton1 = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/button[1]")
+        removebutton1.click()
         #button = follower.driver.find_element(By.CSS_SELECTOR, "//div//button[div[text()='Remove']")
         #follower.click()
         #print(follower)
