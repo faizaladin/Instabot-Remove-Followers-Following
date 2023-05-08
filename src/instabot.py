@@ -12,12 +12,12 @@ class Instabot:
         with open(config_path) as file:
             self.config = yaml.load(file, Loader=yaml.FullLoader)
         self.driver = webdriver.Chrome(service=Service(self.config['driver_path']))
-        print(self.config)
+        #print(self.config)
         self.login(username)
 
     def login(self, username):
         self.driver.get('https://www.instagram.com/accounts/login/')
-        time.sleep(2)
+        time.sleep(10)
         self.driver.find_element(By.NAME, 'username').send_keys(self.config['login']['username'])
         self.driver.find_element(By.NAME, 'password').send_keys(self.config['login']['password'])
         self.driver.find_element(By.CSS_SELECTOR, 'button[type=submit]').click()
@@ -27,39 +27,32 @@ class Instabot:
         # Navigate to your followers list
         self.driver.get("https://www.instagram.com/" + self.config['login']['username'])
         time.sleep(5)
-        self.driver.find_element("xpath", "//a[contains(@href,'/followers')]") \
-            .click()
+        self.driver.find_element("xpath", "//a[contains(@href,'/followers')]").click()
         time.sleep(5)
-        #modal = self.driver.find_element("xpath","//div[@class='isgrP']")
-        modal = self.driver.find_element("xpath", "//a[contains(@href,'/Remove')]")
-        # Scroll down to the bottom of the followers list
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='isgrP']")))
-        modal = self.driver.find_element("xpath","//div[@class='isgrP']")
-        while True:
-            # Scroll down to the bottom
-            self.driver.execute_script(
-                'arguments[0].scrollTop = arguments[0].scrollTop + arguments[0].offsetHeight;',
-                modal)
-            time.sleep(2)
-            # Get the last follower in the list
-            last_follower = self.driver.find_elements("xpath", "//div[@class='isgrP']//li")[-1]
-            # Check if the last follower is already visible
-            if last_follower.location_once_scrolled_into_view['y'] < modal.location_once_scrolled_into_view['y']:
-                break
+        # wait for page to load
         # Get all the followers
-        followers = self.driver.find_elements("xpath","//div[@class='isgrP']//li")
+        self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/button").click()
+        time.sleep(5)
+        #follower = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]")
+        #button = follower.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]/div/div/div/div[3]/div/div")
+        #button = follower.driver.find_element(By.CSS_SELECTOR, "//div//button[div[text()='Remove']")
+        #follower.click()
+        #print(follower)
+        
+        #print(followers)
         # Remove the followers that are in the keep_followers_list
-        if keep_followers_list:
-            followers = [f for f in followers if f.text.split("\n")[0] not in keep_followers_list]
-        # Unfollow the remaining followers
-        for follower in followers:
-            # Get the follow button of the follower
-            button = follower.find_element("xpath", "//button[text()='Following' or text()='Requested']")
-            button.click()
-            # Click the "Unfollow" button on the unfollow confirmation popup
-            self.driver.find_element("xpath","//button[text()='Unfollow']").click()
-            # Wait for 2 seconds before unfollowing the next user
-            time.sleep(2)
+        # if keep_followers_list:
+        #     followers = [f for f in followers if f.text.split("\n")[0] not in keep_followers_list]
+        # # Unfollow the remaining followers
+        # for follower in followers:
+        #     # Get the follow button of the follower
+        #     button = follower.find_element("xpath", "//button[text()='Remove']")
+        #     button.click()
+        #     # Click the "Unfollow" button on the unfollow confirmation popup
+        #     self.driver.find_element("xpath","//button[text()='Remove']").click()
+        #     # Wait for 2 seconds before unfollowing the next user
+        #     time.sleep(2)
+        print("done")
 
     def close(self):
         self.driver.close()
