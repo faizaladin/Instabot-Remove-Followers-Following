@@ -17,7 +17,7 @@ class Instabot:
 
     def login(self, username):
         self.driver.get('https://www.instagram.com/accounts/login/')
-        time.sleep(10)
+        time.sleep(7)
         self.driver.find_element(By.NAME, 'username').send_keys(self.config['login']['username'])
         self.driver.find_element(By.NAME, 'password').send_keys(self.config['login']['password'])
         self.driver.find_element(By.CSS_SELECTOR, 'button[type=submit]').click()
