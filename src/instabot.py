@@ -45,16 +45,16 @@ class Instabot:
         time.sleep(5)
         self.driver.find_element("xpath", "//a[contains(@href,'/followers')]").click()
         time.sleep(5)
-        for i in range(1,5):
-            follower = self.driver.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]")
-            #follower_name = self.driver.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]/div/div/div/div[2]/div/div/span[1]/span/div/div/div/a/span/div")
-            removebutton0 = follower.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]/div/div/div/div[3]/div/div")
-            removebutton0.click()
-            time.sleep(5)
-            removebutton1 = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/button[1]")
-            removebutton1.click()
-            time.sleep(randint(3, 6))
-        print("done")
+        for i in range(1,100):
+            follower_name = self.driver.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]/div/div/div/div[2]/div/div/span[1]/span/div/div/div/a/span/div").text
+            if follower_name not in keep_followers_list:
+                follower = self.driver.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]")
+                removebutton0 = follower.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]/div/div/div/div[3]/div/div")
+                removebutton0.click()
+                time.sleep(5)
+                removebutton1 = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/button[1]")
+                removebutton1.click()
+                time.sleep(randint(3, 6))
 
     def close(self):
         self.driver.close()
