@@ -4,3 +4,5 @@ There are two functions in this script:
   Function 2: Same as function 1 except it removes who you follow. This function also uses the keep_followers_list. 
 
 In Config: Replace username and password with your instagram username and password. Install the chromdriver that matches your current version of chrome and copy the path to where it says 'DRIVER PATH'. 
+
+Install all the necessary dependencies which can be found in the dependencies.txt file. 
