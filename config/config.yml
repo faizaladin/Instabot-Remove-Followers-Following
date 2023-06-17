@@ -1,4 +1,4 @@
 login:
-  username: faiz.aladin
-  password: dogsarecool
-driver_path: /Users/faizaladin/Downloads/chromedriver_mac64/chromedriver
+  username: 'USERNAME'
+  password: 'PASSWORD'
+driver_path: 'DRIVER PATH'

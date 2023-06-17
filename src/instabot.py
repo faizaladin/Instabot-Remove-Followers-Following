@@ -13,15 +13,16 @@ class Instabot:
         with open(config_path) as file:
             self.config = yaml.load(file, Loader=yaml.FullLoader)
         self.driver = webdriver.Chrome(service=Service(self.config['driver_path']))
-        PROXY = "IpOfTheProxy:PORT" 
-        chrome_options = webdriver.ChromeOptions() 
-        chrome_options.add_argument("--proxy-server=%s" % PROXY) 
-        chrome = webdriver.Chrome(options=chrome_options) 
+        #chrome = webdriver.Chrome(options=chrome_options) 
         #print(self.config)
         self.login(username)
 
     def login(self, username):
+        PROXY = "IpOfTheProxy:PORT" 
         options = webdriver.ChromeOptions() 
+        options.add_argument("--proxy-server=%s" % PROXY) 
+        options.add_argument("--headless")
+        options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3')
         # Adding argument to disable the AutomationControlled flag 
         options.add_argument("--disable-blink-features=AutomationControlled") 
         # Exclude the collection of enable-automation switches 
@@ -44,29 +45,51 @@ class Instabot:
         self.driver.get("https://www.instagram.com/" + self.config['login']['username'])
         time.sleep(5)
         self.driver.find_element("xpath", "//a[contains(@href,'/followers')]").click()
-        time.sleep(5)
-        for i in range(1,100):
+        time.sleep(10)
+        fBody  = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]") 
+        for i in range(1,110):
+            time.sleep(randint(5,7))
             follower_name = self.driver.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]/div/div/div/div[2]/div/div/span[1]/span/div/div/div/a/span/div").text
             if follower_name not in keep_followers_list:
-                follower = self.driver.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]")
-                removebutton0 = follower.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]/div/div/div/div[3]/div/div")
-                removebutton0.click()
-                time.sleep(5)
-                removebutton1 = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/button[1]")
-                removebutton1.click()
-                time.sleep(randint(3, 6))
+                 follower = self.driver.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]")
+                 removebutton0 = follower.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[{i}]/div/div/div/div[3]/div/div")
+                 time.sleep(randint(7, 27))
+                 removebutton0.click()
+                 time.sleep(randint(4, 25))
+                 removebutton1 = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/button[1]")
+                 removebutton1.click()
+                 time.sleep(randint(3, 7))
+            if i % 5 == 0:
+                self.driver.execute_script('arguments[0].scrollTop = arguments[0].scrollTop + arguments[0].offsetHeight;', fBody)
+                time.sleep(randint(5, 10))
+            
+    def remove_following(self, keep_followers_list=None):
+        self.driver.get("https://www.instagram.com/" + self.config['login']['username'])
+        time.sleep(5)
+        self.driver.find_element("xpath", "//a[contains(@href,'/following')]").click()
+        time.sleep(10)
+        fBody  = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]") 
+        for i in range(1,582):
+            time.sleep(randint(5,7))
+            follower_name = self.driver.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/div[1]/div/div[{i}]/div/div/div/div[2]/div/div/span[1]/span/div/div/div/a/span/div").text
+            if follower_name not in keep_followers_list:
+                 follower = self.driver.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/div[1]/div/div[{i}]")
+                 removebutton0 = follower.find_element("xpath", f"/html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/div[1]/div/div[{i}]/div/div/div/div[3]/div/button")
+                 time.sleep(randint(7, 27))
+                 removebutton0.click()
+                 time.sleep(randint(4, 25))
+                 removebutton1 = self.driver.find_element("xpath", "/html/body/div[2]/div/div/div[3]/div/div[2]/div[1]/div/div[2]/div/div/div/div/div/div/button[1]")
+                 removebutton1.click()
+                 time.sleep(randint(3, 7))
+            if i % 5 == 0:
+                self.driver.execute_script('arguments[0].scrollTop = arguments[0].scrollTop + arguments[0].offsetHeight;', fBody)
+                time.sleep(randint(5, 10))
 
     def close(self):
         self.driver.close()
 
 if __name__ == '__main__':
     instabot = Instabot('config/config.yml', sys.argv[1])
-    keep_followers_list = ['francisco.moreira15', 'haley.lowenthal', '84nrogers', 'ellarudisill', 'khe_levy', 'chesniecheung', 'j1njee', 'nickyph34', 'billtrn_', 'williemears', 'mortn4sty', 'jason.hwong', 'sam.rubin99', 'priyaabakshi', 'genna.bishop', 'freddie_lemons', 'mala.krish', 'rayan.tzd', 'pono_demarzo', 'averyychen', '_xuanyi.wang', 'fernseph', 'sana.aladin']
-    instabot.remove_followers(keep_followers_list)
+    keep_followers_list = []
+    instabot.remove_following(keep_followers_list)
     instabot.close()
-
-# first user /html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]
-
-#second user /html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[2]
-
-#first user remove button /html/body/div[2]/div/div/div[3]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/div/div[1]/div/div/div/div[2]/div/div/span[1]/span/div/div/div/a/span/div
