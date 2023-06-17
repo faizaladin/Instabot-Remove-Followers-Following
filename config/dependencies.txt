@@ -2,3 +2,4 @@ pyyaml
 requests
 simplejson
 urllib.parse
+selenium webdriver
